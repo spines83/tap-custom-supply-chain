@@ -1,0 +1,23 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: sleep-echo-task
+  namespace: python-app
+spec:
+  description: >-
+    This task is aimed to be a minimal example to show branching flows in TAP
+  params:
+    - name: echo-string
+      description: What to echo out
+      default: "Hello, world!"
+    - name: source-url
+      description: Location of the source code
+    - name: source-revision
+      description: Revision of the source code
+  steps:
+    - name: sleep-echo
+      image: alpine:3.18.2
+      script: |
+        #!/bin/sh
+        echo $(params.echo-string)

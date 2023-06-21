@@ -1,0 +1,55 @@
+---
+apiVersion: carto.run/v1alpha1
+kind: ClusterSupplyChain
+metadata:
+  name: echo-supply-chain
+spec:
+  resources:
+  # We start with the OOTB source-provider
+  - name: source-provider
+    params:
+    - default: default
+      name: serviceAccount
+    - default: go-git
+      name: gitImplementation
+    templateRef:
+      kind: ClusterSourceTemplate
+      name: source-template
+  # Branch A
+  - name: branch-a
+    sources:
+    - name: source
+      resource: source-provider
+    params:
+    - name: echo
+      default: "Hello from A!"
+    templateRef:
+      kind: ClusterSourceTemplate
+      name: sleep-echo-template
+  # Branch B
+  - name: branch-b
+    sources:
+    - name: source
+      resource: source-provider
+    params:
+    - name: echo
+      default: "Hello from B!"
+    templateRef:
+      kind: ClusterSourceTemplate
+      name: sleep-echo-template
+  # Join results of A+B
+  - name: join
+    sources:
+    - name: source
+      resource: branch-a
+    - name: source-other
+      resource: branch-b
+    params:
+    - name: echo
+      default: "Hello from Joint!"
+    templateRef:
+      kind: ClusterSourceTemplate
+      name: sleep-echo-template
+
+  selector:
+    workload-type: pre-built

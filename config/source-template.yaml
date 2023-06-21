@@ -1,0 +1,27 @@
+---
+apiVersion: carto.run/v1alpha1
+kind: ClusterSourceTemplate
+metadata:
+  name: sleep-echo-template
+spec:
+  ytt: |
+    #@ load("@ytt:data", "data")
+    apiVersion: tekton.dev/v1beta1
+    kind: PipelineRun
+    metadata:
+      generateName: sleep-echo-pipeline-run-
+    spec:
+      pipelineRef:
+        name: sleep-echo-pipeline
+      params:
+        - name: repository
+          value: #@ data.values.sources.source.url
+        - name: revision
+          value: #@ data.values.sources.source.revision
+        - name: echo-string
+          value: #@ data.values.params.echo
+
+  # Note: we're not changing anything 
+  urlPath: .status.pipelineSpec.tasks[0].params[0].value
+  revisionPath: .status.pipelineSpec.tasks[0].params[1].value
+  lifecycle: tekton

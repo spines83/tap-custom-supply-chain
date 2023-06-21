@@ -1,0 +1,15 @@
+---
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  name: hello
+  namespace: python-app
+  labels:
+    app.kubernetes.io/part-of: hello
+    workload-type: pre-built
+spec:
+  source:
+    git:
+      ref:
+        branch: main
+      url: https://github.com/spines83/python-function.git
